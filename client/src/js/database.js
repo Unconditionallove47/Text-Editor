@@ -8,53 +8,52 @@ const initdb = async () =>
         return;
       }
       db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
-      console.log('jate database created');
+      console.log('jateHALEY database created');
     },
   });
 
-//Add logic to a method that accepts some content and adds it to the database
-export const putDb = async (content) => {
-  console.log('put to db');
+// Add logic to a method that accepts some content and adds it to the database
+export const putDb = async (content) => { 
 
-  //database connection
+  console.log('PUT to the database');
+  
   const jateDb = await openDB('jate', 1);
 
-  //transaction here**
   const tx = jateDb.transaction('jate', 'readwrite');
 
-  //opens object store location
   const store = tx.objectStore('jate');
 
-  
-  const request = store.put({ id: 1, jate: content });
+  const request = store.put({ id: 1, value: content });
 
-  
   const result = await request;
-  console.log('result.value', result);
-  return result;
-}
+
+  // result is equal to 1
+  console.log('data saved to database', result);
+};
 
 // Add logic for a method that gets all the content from the database
-export const getDb = async () => {
-  console.log('get all from db');
+export const getDb = async (id) => {
+  console.log('GET from the database');
 
- //database connection
+  // Create a connection to the database database and version we want to use.
   const jateDb = await openDB('jate', 1);
 
- //transaction here**
+   // Create a new transaction and specify the database and data privileges.
   const tx = jateDb.transaction('jate', 'readonly');
 
- //opens object store location
+  // Open up the desired object store.
   const store = tx.objectStore('jate');
 
-//GETALL
-  const request = store.get(1);
+   // Use the .get() method to get a piece of data from the database based on the id.
+  const request = store.get(id);
 
-  console.log(request);
-
+  // Get confirmation of the request.
   const result = await request;
-  console.log('result.value', result);
-  return result;
-}
+
+  console.log('result.value', result?.value);
+
+  return result?.value;
+ 
+};
 
 initdb();
